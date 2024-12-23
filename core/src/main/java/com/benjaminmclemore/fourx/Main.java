@@ -4,13 +4,20 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
+ * platforms.
+ */
 public class Main extends ApplicationAdapter {
-    private SpriteBatch batch;
+    private SpriteBatch spriteBatch;
+    private FitViewport viewport;
+
     private Texture image;
 
     // drop
@@ -22,7 +29,8 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
+        spriteBatch = new SpriteBatch();
+        viewport = new FitViewport(8, 5);
         image = new Texture("libgdx.png");
 
         // drop
@@ -35,15 +43,47 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+
+        // drop
+        input();
+        logic();
+        draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true); // true centers the camera
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
+        spriteBatch.dispose();
         image.dispose();
+    }
+
+    private void input() {
+
+    }
+
+    private void logic() {
+
+    }
+
+    private void draw() {
+
+        ScreenUtils.clear(Color.BLACK);
+        viewport.apply();
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
+        spriteBatch.begin();
+
+        // store the worldWidth and worldHeight as local variables for brevity
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
+
+        spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight); // draw the background
+        spriteBatch.draw(bucketTexture, 0, 0, 1, 1); // draw the bucket
+
+        spriteBatch.end();
+
     }
 }
